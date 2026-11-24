@@ -1,8 +1,12 @@
 "use client";
 
 import { CardFace } from "@/components/CardFace";
-import { PACK_COOLDOWN_MS } from "@/lib/rarity";
-import type { Collection, Family, GameCard, PackPull } from "@/lib/types";
+import { useMode } from "@/components/ModeProvider";
+import { fetchCatalog } from "@/lib/api";
+import { openPack } from "@/lib/pack";
+import { loadCollection, saveCollection } from "@/lib/player";
+import { PACK_COOLDOWN_MS, RARITY_ORDER, defaultOdds, oddsPercent, rarityColor, rarityLabel } from "@/lib/rarity";
+import type { Collection, Family, GameCard, Odds, PackPull } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
 
 function formatWait(ms: number) {
@@ -16,22 +20,26 @@ export default function PacksPage() {
   const [families, setFamilies] = useState<Family[]>([]);
   const [cards, setCards] = useState<GameCard[]>([]);
   const [collection, setCollection] = useState<Collection>({ owned: {}, lastPackAt: null });
+  const [odds, setOdds] = useState<Odds>(defaultOdds);
   const [pulls, setPulls] = useState<PackPull[]>([]);
   const [shown, setShown] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(Date.now());
-
-  async function load() {
-    const res = await fetch("/api/catalog");
-    const data = await res.json();
-    setFamilies(data.families);
-    setCards(data.cards);
-    setCollection(data.collection);
-  }
+  const { mode } = useMode();
 
   useEffect(() => {
+    setCollection(loadCollection());
+    function load() {
+      fetchCatalog().then((data) => {
+        setFamilies(data.families);
+        setCards(data.cards);
+        setOdds(data.odds);
+      });
+    }
     load();
+    window.addEventListener("focus", load);
+    return () => window.removeEventListener("focus", load);
   }, []);
 
   useEffect(() => {
@@ -41,7 +49,7 @@ export default function PacksPage() {
 
   useEffect(() => {
     if (!pulls.length || shown >= pulls.length) return;
-    const id = setTimeout(() => setShown((n) => n + 1), 280);
+    const id = setTimeout(() => setShown((n) => n + 1), 220);
     return () => clearTimeout(id);
   }, [pulls, shown]);
 
@@ -60,49 +68,64 @@ export default function PacksPage() {
     if (!ready) return;
     setBusy(true);
     setError("");
-    const res = await fetch("/api/pack", { method: "POST" });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "Impossible d’ouvrir.");
-      if (data.collection) setCollection(data.collection);
-      setBusy(false);
-      return;
+    try {
+      const data = await fetchCatalog();
+      const current = loadCollection();
+      const nextPulls = openPack(data.cards, current.owned, data.odds);
+      if (!nextPulls.length) {
+        setError("Le set est vide.");
+        setBusy(false);
+        return;
+      }
+      const owned = { ...current.owned };
+      for (const pull of nextPulls) {
+        owned[pull.cardId] = (owned[pull.cardId] ?? 0) + 1;
+      }
+      const next = { owned, lastPackAt: Date.now() };
+      saveCollection(next);
+      setCollection(next);
+      setPulls(nextPulls);
+      setShown(0);
+    } catch {
+      setError("Impossible d’ouvrir.");
     }
-    setCollection(data.collection);
-    setPulls(data.pulls);
-    setShown(0);
     setBusy(false);
   }
 
   return (
-    <section className="space-y-6">
-      <div className="mx-auto max-w-xl text-center">
-        <h1 className="text-4xl text-white">Packs</h1>
-        <p className="mt-2 text-slate-300">Un pack de 5 cartes, une fois par minute.</p>
-        <button
-          onClick={open}
-          disabled={!ready}
-          className="mt-5 rounded-full bg-amber-300 px-8 py-4 text-sm font-bold uppercase tracking-[0.25em] text-black disabled:opacity-40"
-        >
+    <section className="space-y-8">
+      <div className="panel mx-auto max-w-xl rounded-[2rem] px-8 py-10 text-center">
+        <p className="text-xs uppercase tracking-[0.35em] text-[var(--gold)]">Sceau</p>
+        <h1 className="display mt-2 text-5xl text-white">Packs</h1>
+        <p className="mt-3 text-stone-400">Cinq cartes. Une fois par minute. Ton album reste sur cet appareil.</p>
+        {mode === "admin" && (
+          <div className="mt-5 flex flex-wrap justify-center gap-2 text-[11px] uppercase tracking-widest">
+            {RARITY_ORDER.map((rarity) => (
+              <span key={rarity} className="rounded-full px-3 py-1" style={{ color: rarityColor[rarity], border: `1px solid ${rarityColor[rarity]}55` }}>
+                {rarityLabel[rarity]} {oddsPercent(odds, rarity).toFixed(0)}%
+              </span>
+            ))}
+          </div>
+        )}
+        <button onClick={open} disabled={!ready} className="gold-btn mt-7 px-10 py-4 text-sm">
           {busy
-            ? "Ouverture..."
+            ? "Bris du sceau…"
             : !cards.length
-              ? "Ajoute des cartes d’abord"
+              ? "Le set est vide"
               : ready
                 ? "Ouvrir un pack"
                 : `Prochain pack ${formatWait(waitMs)}`}
         </button>
         {error && <p className="mt-3 text-rose-300">{error}</p>}
-        {!cards.length && <p className="mt-3 text-amber-200">Ajoute des cartes dans l’atelier.</p>}
       </div>
 
       {pulls.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-5">
           {pulls.slice(0, shown).map((pull, index) => {
             const card = cardById[pull.cardId];
             if (!card) return null;
             return (
-              <div key={`${pull.cardId}-${index}`} className="animate-[pulse_0.4s_ease]">
+              <div key={`${pull.cardId}-${index}`} className="reveal" style={{ animationDelay: `${index * 40}ms` }}>
                 <CardFace
                   card={card}
                   family={familyById[card.familyId]}

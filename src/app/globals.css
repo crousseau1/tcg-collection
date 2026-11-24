@@ -1,25 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0b1020;
-  --panel: #141a2e;
-  --line: #2a3354;
+  --ink: #07060c;
+  --panel: rgba(16, 14, 28, 0.78);
+  --line: rgba(232, 195, 106, 0.18);
   --gold: #e8c36a;
-  --mist: #c9d2f0;
+  --mist: #ddd6c8;
 }
 
 html,
 body {
   min-height: 100%;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, #2a1848 0%, transparent 50%),
-    radial-gradient(900px 500px at 100% 0%, #12324a 0%, transparent 46%),
-    var(--ink);
-  color: var(--mist);
 }
 
 body {
-  font-family: Georgia, "Times New Roman", serif;
+  color: var(--mist);
+  background:
+    radial-gradient(900px 500px at 8% -10%, rgba(140, 42, 72, 0.35), transparent 55%),
+    radial-gradient(800px 480px at 100% 0%, rgba(42, 78, 130, 0.28), transparent 50%),
+    radial-gradient(700px 400px at 50% 110%, rgba(88, 50, 18, 0.25), transparent 50%),
+    linear-gradient(180deg, #0c0a12 0%, #07060c 100%);
+  font-family: var(--font-ui), "Segoe UI", sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: 0.04em;
 }
 
 button,
@@ -29,6 +48,110 @@ textarea {
   font: inherit;
 }
 
-.card-glow {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+input,
+select,
+textarea {
+  background: rgba(7, 6, 12, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  color: var(--mist);
+  outline: none;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 195, 106, 0.12);
+}
+
+input[type="range"] {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0;
+  box-shadow: none;
+}
+
+input[type="range"]:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+}
+
+.gold-btn {
+  background: linear-gradient(180deg, #f3d78a, #c9a14a);
+  color: #1a1204;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(232, 195, 106, 0.25);
+}
+
+.gold-btn:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+@keyframes foil {
+  0% {
+    background-position: 0% 40%;
+  }
+  100% {
+    background-position: 200% 60%;
+  }
+}
+
+@keyframes reveal-card {
+  from {
+    opacity: 0;
+    transform: rotateY(70deg) translateY(18px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.foil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 40%,
+    rgba(232, 195, 106, 0.2) 50%,
+    transparent 70%
+  );
+  background-size: 220% 220%;
+  animation: foil 4.5s linear infinite;
+  mix-blend-mode: screen;
+}
+
+.reveal {
+  animation: reveal-card 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transform-style: preserve-3d;
+}
+
+.card-portrait {
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+  height: 21rem;
+  flex: 0 0 15rem;
+}
+
+.card-art {
+  height: 10.5rem;
+  flex: 0 0 10.5rem;
 }

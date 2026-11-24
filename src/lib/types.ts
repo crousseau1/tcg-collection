@@ -11,13 +11,12 @@ export type GameCard = {
   id: string;
   name: string;
   familyId: string;
-  cost: number;
-  attack: number;
-  health: number;
   rarity: Rarity;
   text: string;
   imageUrl: string;
 };
+
+export type Odds = Record<Rarity, number>;
 
 export type Collection = {
   owned: Record<string, number>;

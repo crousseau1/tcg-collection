@@ -1,42 +1,15 @@
-import { PACK_SIZE, RARITY_ORDER } from "./rarity";
-import type { GameCard, PackPull, Rarity } from "./types";
+import { PACK_SIZE, RARITY_ORDER, sanitizeOdds } from "./rarity";
+import type { GameCard, Odds, PackPull, Rarity } from "./types";
 
-type Weight = { rarity: Rarity; weight: number };
-
-const SLOTS: Weight[][] = [
-  [
-    { rarity: "commune", weight: 94 },
-    { rarity: "rare", weight: 6 },
-  ],
-  [
-    { rarity: "commune", weight: 90 },
-    { rarity: "rare", weight: 10 },
-  ],
-  [
-    { rarity: "commune", weight: 80 },
-    { rarity: "rare", weight: 18 },
-    { rarity: "epique", weight: 2 },
-  ],
-  [
-    { rarity: "rare", weight: 72 },
-    { rarity: "epique", weight: 24 },
-    { rarity: "legendaire", weight: 4 },
-  ],
-  [
-    { rarity: "rare", weight: 50 },
-    { rarity: "epique", weight: 38 },
-    { rarity: "legendaire", weight: 12 },
-  ],
-];
-
-function roll(weights: Weight[]): Rarity {
-  const total = weights.reduce((sum, item) => sum + item.weight, 0);
+function roll(odds: Odds): Rarity {
+  const clean = sanitizeOdds(odds);
+  const total = RARITY_ORDER.reduce((sum, rarity) => sum + clean[rarity], 0);
   let n = Math.random() * total;
-  for (const item of weights) {
-    n -= item.weight;
-    if (n <= 0) return item.rarity;
+  for (const rarity of RARITY_ORDER) {
+    n -= clean[rarity];
+    if (n <= 0) return rarity;
   }
-  return weights[weights.length - 1].rarity;
+  return "commune";
 }
 
 function pickCard(cards: GameCard[], rarity: Rarity) {
@@ -55,12 +28,12 @@ function pickCard(cards: GameCard[], rarity: Rarity) {
   return cards[Math.floor(Math.random() * cards.length)];
 }
 
-export function openPack(cards: GameCard[], owned: Record<string, number>): PackPull[] {
+export function openPack(cards: GameCard[], owned: Record<string, number>, odds: Odds): PackPull[] {
   if (!cards.length) return [];
   const pulls: PackPull[] = [];
   const nextOwned = { ...owned };
   for (let i = 0; i < PACK_SIZE; i++) {
-    const rarity = roll(SLOTS[i] ?? SLOTS[SLOTS.length - 1]);
+    const rarity = roll(odds);
     const card = pickCard(cards, rarity);
     const wasOwned = (nextOwned[card.id] ?? 0) > 0;
     nextOwned[card.id] = (nextOwned[card.id] ?? 0) + 1;
