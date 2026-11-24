@@ -1,5 +1,24 @@
-export function fetchCatalog() {
-  return fetch("/api/catalog", { cache: "no-store" }).then((r) => r.json());
+import cardsFallback from "../../data/cards.json";
+import familiesFallback from "../../data/families.json";
+import oddsFallback from "../../data/odds.json";
+import { sanitizeOdds } from "./rarity";
+import type { Family, GameCard, Odds } from "./types";
+
+const staticCatalog = () => ({
+  families: familiesFallback as Family[],
+  cards: cardsFallback as GameCard[],
+  odds: sanitizeOdds(oddsFallback as Odds),
+  collection: { owned: {}, lastPackAt: null },
+});
+
+export async function fetchCatalog() {
+  try {
+    const res = await fetch("/api/catalog", { cache: "no-store" });
+    if (res.ok) return res.json();
+  } catch {
+    // Hébergement statique : on lit le set bundlé.
+  }
+  return staticCatalog();
 }
 
 export function patchCatalog(body: unknown) {
