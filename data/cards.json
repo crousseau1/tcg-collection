@@ -1,0 +1,145 @@
+[
+  {
+    "id": "c1",
+    "name": "Étincelle",
+    "familyId": "emberveil",
+    "cost": 1,
+    "attack": 2,
+    "health": 1,
+    "rarity": "commune",
+    "text": "Petite flamme pressée.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c2",
+    "name": "Garde-Cendre",
+    "familyId": "emberveil",
+    "cost": 2,
+    "attack": 2,
+    "health": 3,
+    "rarity": "commune",
+    "text": "Tient la ligne de feu.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c3",
+    "name": "Lame-Forge",
+    "familyId": "emberveil",
+    "cost": 3,
+    "attack": 4,
+    "health": 3,
+    "rarity": "rare",
+    "text": "Frappe dur dès qu'elle peut.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c4",
+    "name": "Wyrm de Magma",
+    "familyId": "emberveil",
+    "cost": 5,
+    "attack": 6,
+    "health": 5,
+    "rarity": "epique",
+    "text": "Le boss du brasier.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c5",
+    "name": "Gouttevive",
+    "familyId": "tideborn",
+    "cost": 1,
+    "attack": 1,
+    "health": 2,
+    "rarity": "commune",
+    "text": "Petite sentinelle d'eau.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c6",
+    "name": "Veilleur du Rivage",
+    "familyId": "tideborn",
+    "cost": 2,
+    "attack": 1,
+    "health": 4,
+    "rarity": "commune",
+    "text": "Bouclier liquide.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c7",
+    "name": "Chasse-Écume",
+    "familyId": "tideborn",
+    "cost": 3,
+    "attack": 3,
+    "health": 4,
+    "rarity": "rare",
+    "text": "Pousse et tient.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c8",
+    "name": "Léviathan d'Azur",
+    "familyId": "tideborn",
+    "cost": 6,
+    "attack": 5,
+    "health": 8,
+    "rarity": "legendaire",
+    "text": "Une montagne qui nage.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c9",
+    "name": "Pousse-Piège",
+    "familyId": "thornwake",
+    "cost": 1,
+    "attack": 1,
+    "health": 1,
+    "rarity": "commune",
+    "text": "Minuscule mais rageuse.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c10",
+    "name": "Gardien de Lianes",
+    "familyId": "thornwake",
+    "cost": 2,
+    "attack": 2,
+    "health": 3,
+    "rarity": "commune",
+    "text": "S'enracine.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c11",
+    "name": "Traque-Ronce",
+    "familyId": "thornwake",
+    "cost": 3,
+    "attack": 4,
+    "health": 2,
+    "rarity": "rare",
+    "text": "Bondit hors des ronces.",
+    "imageUrl": ""
+  },
+  {
+    "id": "c12",
+    "name": "Hydre Sylvestre",
+    "familyId": "thornwake",
+    "cost": 5,
+    "attack": 5,
+    "health": 6,
+    "rarity": "epique",
+    "text": "Coupe une tête, deux reviennent.",
+    "imageUrl": ""
+  },
+  {
+    "name": "Lame d'Obsidienne",
+    "familyId": "a3f27181-ee74-431d-8f8e-39b3a27de86c",
+    "cost": 1,
+    "attack": 3,
+    "health": 1,
+    "rarity": "commune",
+    "text": "Tranchant d'ombre.",
+    "imageUrl": "",
+    "id": "4170ecd3-7a82-4c25-a257-a42969a54ba8"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "emberveil",
+    "name": "Voile-Braise",
+    "color": "#e11d48",
+    "description": "Frappe vite, brûle tout."
+  },
+  {
+    "id": "tideborn",
+    "name": "Marée-Née",
+    "color": "#0891b2",
+    "description": "Tient le front, noie l'adversaire."
+  },
+  {
+    "id": "thornwake",
+    "name": "Roncevive",
+    "color": "#16a34a",
+    "description": "Croît, piège, survit."
+  },
+  {
+    "id": "a3f27181-ee74-431d-8f8e-39b3a27de86c",
+    "name": "Nuit-Obsidienne",
+    "color": "#e11d48",
+    "description": "Ombres et lames noires."
+  }
+]
