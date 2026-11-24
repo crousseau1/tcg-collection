@@ -28,6 +28,7 @@ jobs:
       - run: npm run build
         env:
           STATIC_EXPORT: "1"
+          NEXT_PUBLIC_STATIC: "1"
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:

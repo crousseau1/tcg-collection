@@ -12,9 +12,13 @@ const staticCatalog = () => ({
 });
 
 export async function fetchCatalog() {
+  if (process.env.NEXT_PUBLIC_STATIC === "1") return staticCatalog();
   try {
     const res = await fetch("/api/catalog", { cache: "no-store" });
-    if (res.ok) return res.json();
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data?.cards)) return data;
+    }
   } catch {
     // Hébergement statique : on lit le set bundlé.
   }

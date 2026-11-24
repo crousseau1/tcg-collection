@@ -34,7 +34,8 @@ export function Nav() {
       <div className="flex flex-wrap items-center gap-2">
         <nav className="panel flex gap-1 rounded-full p-1 text-xs uppercase tracking-[0.22em]">
           {links.map((link) => {
-            const active = path === link.href;
+            const current = (path || "/").replace(/\/$/, "") || "/";
+            const active = current === link.href;
             return (
               <Link
                 key={link.href}
